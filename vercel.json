@@ -20,7 +20,6 @@
       "destination": "/vps_panel"
     },
     
-    
     {
       "source": "/login",
       "destination": "/server"
@@ -43,12 +42,32 @@
       "destination": "/server"
     },
     {
-      "source": "/upload",
+      "source": "/view-archive",
+      "destination": "/server"
+    },
+    {
+      "source": "/loadfile",
       "destination": "/server"
     },
     
     {
-      "source": "/:path(delete-files|archive|extract|view-archive|loadfile|savefile)",
+      "source": "/upload",
+      "destination": "/server"
+    },
+    {
+      "source": "/delete-files",
+      "destination": "/server"
+    },
+    {
+      "source": "/archive",
+      "destination": "/server"
+    },
+    {
+      "source": "/extract",
+      "destination": "/server"
+    },
+    {
+      "source": "/savefile",
       "destination": "/server"
     }
   ]
