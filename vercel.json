@@ -1,0 +1,59 @@
+{
+  "rewrites": [
+    {
+      "source": "/shell",
+      "destination": "server.js"
+    },
+    {
+      "source": "/files",
+      "destination": "server.js"
+    },
+    {
+      "source": "/upload",
+      "destination": "server.js"
+    },
+    {
+      "source": "/delete-files",
+      "destination": "server.js"
+    },
+    {
+      "source": "/archive",
+      "destination": "server.js"
+    },
+    {
+      "source": "/extract",
+      "destination": "server.js"
+    },
+    {
+      "source": "/view-archive",
+      "destination": "server.js"
+    },
+    {
+      "source": "/loadfile",
+      "destination": "server.js"
+    },
+    {
+      "source": "/savefile",
+      "destination": "server.js"
+    },
+    {
+      // Ini adalah yang terpenting untuk login/register POST
+      "source": "/register",
+      "destination": "server.js"
+    },
+    {
+      "source": "/login",
+      "destination": "server.js"
+    },
+    {
+      "source": "/logout",
+      "destination": "server.js"
+    },
+    {
+      // Catch-all untuk rute API Express yang menerima query param,
+      // ini harus diarahkan ke server.js untuk diproses oleh Express.
+      "source": "/:path*",
+      "destination": "server.js"
+    }
+  ]
+}
