@@ -10,20 +10,46 @@
     }
   ],
   "rewrites": [
+    // Rute Halaman Next.js (Dibiarkan Next.js yang menangani GET)
     {
-  
       "source": "/",
       "destination": "/"
     },
     {
-      
       "source": "/vps_panel",
       "destination": "/vps_panel"
     },
-    {
     
-      "source": "/:path((?!_next|vps_panel|static|favicon.ico).*)",
-      "destination": "/server.js"
+    
+    {
+      "source": "/login",
+      "destination": "/server"
+    },
+    {
+      "source": "/register",
+      "destination": "/server"
+    },
+    {
+      "source": "/logout",
+      "destination": "/server"
+    },
+    
+    {
+      "source": "/shell",
+      "destination": "/server"
+    },
+    {
+      "source": "/files",
+      "destination": "/server"
+    },
+    {
+      "source": "/upload",
+      "destination": "/server"
+    },
+    
+    {
+      "source": "/:path(delete-files|archive|extract|view-archive|loadfile|savefile)",
+      "destination": "/server"
     }
   ]
 }
