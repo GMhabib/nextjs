@@ -37,7 +37,6 @@
       "destination": "server.js"
     },
     {
-      // Ini adalah yang terpenting untuk login/register POST
       "source": "/register",
       "destination": "server.js"
     },
@@ -50,8 +49,6 @@
       "destination": "server.js"
     },
     {
-      // Catch-all untuk rute API Express yang menerima query param,
-      // ini harus diarahkan ke server.js untuk diproses oleh Express.
       "source": "/:path*",
       "destination": "server.js"
     }
