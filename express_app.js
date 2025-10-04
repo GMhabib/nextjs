@@ -1,4 +1,4 @@
-const { exec, spawn } = require('child_process');
+const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
@@ -7,21 +7,17 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 
-// Eksport fungsi setup yang menerima instance Express (app)
 exports.setupExpressApp = (app) => {
     const port = 3000;
 
-    // --- DEKLARASI KRITIS ---
     const usersInMem = {};
     const UPLOAD_DIR = path.join(process.cwd(), 'uploaded_files');
-    let SERVE_TUNNEL_URL = `http://localhost:${port}`;
 
     if (!fs.existsSync(UPLOAD_DIR)) {
         fs.mkdirSync(UPLOAD_DIR);
         console.log(`Direktori upload dibuat: ${UPLOAD_DIR}`);
     }
 
-    // Konfigurasi multer
     const storage = multer.diskStorage({
         destination: (req, file, cb) => { cb(null, UPLOAD_DIR); },
         filename: (req, file, cb) => { cb(null, file.originalname); }
@@ -31,7 +27,6 @@ exports.setupExpressApp = (app) => {
         limits: { fileSize: 1024 * 1024 * 5 }
     });
 
-    // --- MIDDLEWARE UTAMA ---
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -39,10 +34,8 @@ exports.setupExpressApp = (app) => {
         secret: 'SuperSecretKeyForWebshell',
         resave: false,
         saveUninitialized: true,
-        cookie: { maxAge: 24 * 60 * 60 * 1000 }
+        cookie: { maxAge: 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === 'production' }
     }));
-
-    // --- MIDDLEWARE AUTH & AUTHORIZATION ---
 
     function requireLogin(req, res, next) {
         if (req.session.isLoggedIn) {
@@ -82,7 +75,6 @@ exports.setupExpressApp = (app) => {
         next();
     }
 
-    // Middleware global untuk mengamankan semua rute
     app.use((req, res, next) => {
         const publicPaths = ['/login', '/register', '/logout']; 
         const isPublicPath = publicPaths.includes(req.path) || req.path === '/';
@@ -95,19 +87,6 @@ exports.setupExpressApp = (app) => {
         requireLogin(req, res, next);
     });
 
-    // --- FITUR REDIRECT KE URL SERVE O/LOCALHOST.RUN ---
-    app.use((req, res, next) => {
-        if (SERVE_TUNNEL_URL !== `http://localhost:${port}` && req.headers.host.includes(`localhost:${port}`)) {
-            if (!req.path.match(/\.(css|js|png|jpg|ico|gif|svg)$/i)) {
-                const newUrl = `${SERVE_TUNNEL_URL}${req.originalUrl}`;
-                console.log(`Redirecting from localhost to tunnel: ${newUrl}`);
-                return res.redirect(302, newUrl);
-            }
-        }
-        next();
-    });
-
-    // --- RUTE OTENTIKASI (LOGIN/REGISTER/LOGOUT) ---
     app.post('/register', async (req, res) => {
         const { email, password, role } = req.body;
         if (!email || !password || (role !== 'user' && role !== 'admin')) {
@@ -126,7 +105,6 @@ exports.setupExpressApp = (app) => {
             req.session.role = role;
             req.session.cwd = UPLOAD_DIR; 
             
-            // Perbaikan Kritis: Paksa simpan sesi sebelum redirect
             req.session.save(err => {
                 if (err) {
                     console.error("Error saving session after register:", err);
@@ -154,7 +132,6 @@ exports.setupExpressApp = (app) => {
             req.session.role = user.role;
             req.session.cwd = UPLOAD_DIR; 
             
-            // Perbaikan Kritis: Paksa simpan sesi sebelum redirect
             req.session.save(err => {
                 if (err) {
                     console.error("Error saving session after login:", err);
@@ -177,7 +154,6 @@ exports.setupExpressApp = (app) => {
         });
     });
 
-    // --- RUTE WEBSHELL / FILE MANAGER (STATEFUL) ---
     app.get('/shell', commandRestriction, (req, res) => {
         const cmd = req.query.cmd ? req.query.cmd.trim() : '';
         if (!cmd) {
@@ -446,8 +422,6 @@ exports.setupExpressApp = (app) => {
         }
     });
 
-
-    // --- SETUP ADMIN & SEREVO ---
     if (!usersInMem['admin@shell.com']) {
         bcrypt.hash('admin123', 10).then(hash => {
             usersInMem['admin@shell.com'] = { passwordHash: hash, role: 'admin' };
@@ -455,33 +429,5 @@ exports.setupExpressApp = (app) => {
         });
     }
 
-    const serveo = spawn('ssh', ['-R', 'habib:80:localhost:3000', 'serveo.net']);
-
-    serveo.stdout.on('data', (data) => {
-        const output = data.toString().trim();
-        console.log(`Serveo Tunnel: ${output}`);
-
-        const urlMatch = output.match(/http[s]?:\/\/([a-zA-Z0-9-]+\.localhost\.run|serveo\.net)/);
-        if (urlMatch && urlMatch[0]) {
-            SERVE_TUNNEL_URL = urlMatch[0];
-            console.log(`[KRITIS] Serveo URL berhasil ditangkap: ${SERVE_TUNNEL_URL}`);
-        }
-    });
-
-    serveo.stderr.on('data', (data) => {
-        const output = data.toString().trim();
-        console.error(`Serveo Tunnel Info: ${output}`);
-         const urlMatch = output.match(/http[s]?:\/\/([a-zA-Z0-9-]+\.localhost\.run|serveo\.net)/);
-         if (urlMatch && urlMatch[0]) {
-             SERVE_TUNNEL_URL = urlMatch[0];
-             console.log(`[KRITIS] Serveo URL berhasil ditangkap: ${SERVE_TUNNEL_URL}`);
-         }
-    });
-
-    serveo.on('close', (code) => {
-        console.log(`Serveo tunnel process exited with code ${code}`);
-    });
-
-    // Kembalikan instance aplikasi Express
-    return { webshellApp: app, serveoProcess: serveo };
+    return { webshellApp: app, serveoProcess: null };
 };
