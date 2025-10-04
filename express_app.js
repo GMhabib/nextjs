@@ -70,7 +70,7 @@ exports.setupExpressApp = (app) => {
             ];
         } else if (role === 'admin') {
             dangerousCommands = [
-                'rm -rf', 'rm -fr', 'rm -f', 'rm -r', 'pkill bash', 'pkill sh', 'kill -9', 'pkill su', 'pkill sudo', 'pkill node', 'pkill com.termux', 'format', 'shutdown', 'reboot'
+                'rm -rf', 'rm -fr', 'rm -f', 'rm -r', 'pkill bash', 'pkill sh','pkill npm', 'kill -9', 'pkill su', 'pkill sudo', 'pkill node', 'pkill com.termux', 'format', 'shutdown', 'reboot'
             ];
         } 
         

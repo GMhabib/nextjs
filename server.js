@@ -16,7 +16,9 @@ app.prepare().then(() => {
     const { webshellApp, serveoProcess } = setupExpressApp(server);
 
     // --- Routing Next.js ---
-    // Biarkan Next.js menangani semua permintaan yang bukan rute API/Assets Express
+    webshellApp.get('/', (req, res) => {
+    return handle(req, res);
+    });
     webshellApp.all('*', (req, res) => {
         return handle(req, res);
     });
