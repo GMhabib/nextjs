@@ -1,7 +1,7 @@
 const express = require('express');
 const next = require('next');
 const path = require('path');
-const { setupExpressApp } = require('./express_app'); // Kita akan buat file ini
+const { setupExpressApp } = require('./express_app');
 
 const port = 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -11,11 +11,8 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
     const server = express();
 
-    // Panggil fungsi setup dari file express_app.js
-    // Fungsi ini mengembalikan instance Express yang sudah dikonfigurasi
     const { webshellApp, serveoProcess } = setupExpressApp(server);
 
-    // --- Routing Next.js ---
     webshellApp.get('/', (req, res) => {
     return handle(req, res);
     });
