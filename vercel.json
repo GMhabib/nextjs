@@ -10,7 +10,7 @@
     }
   ],
   "rewrites": [
-    // Rute Halaman Next.js (Dibiarkan Next.js yang menangani GET)
+    
     {
       "source": "/",
       "destination": "/"
