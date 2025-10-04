@@ -11,14 +11,17 @@
   ],
   "rewrites": [
     {
-      "source": "/vps_panel",
-      "destination": "/vps_panel"
-    },
-    {
+  
       "source": "/",
       "destination": "/"
     },
     {
+      
+      "source": "/vps_panel",
+      "destination": "/vps_panel"
+    },
+    {
+    
       "source": "/:path((?!_next|vps_panel|static|favicon.ico).*)",
       "destination": "/server.js"
     }
