@@ -1,56 +1,26 @@
 {
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
   "rewrites": [
     {
-      "source": "/shell",
-      "destination": "server.js"
+      "source": "/vps_panel",
+      "destination": "/vps_panel"
     },
     {
-      "source": "/files",
-      "destination": "server.js"
+      "source": "/",
+      "destination": "/"
     },
     {
-      "source": "/upload",
-      "destination": "server.js"
-    },
-    {
-      "source": "/delete-files",
-      "destination": "server.js"
-    },
-    {
-      "source": "/archive",
-      "destination": "server.js"
-    },
-    {
-      "source": "/extract",
-      "destination": "server.js"
-    },
-    {
-      "source": "/view-archive",
-      "destination": "server.js"
-    },
-    {
-      "source": "/loadfile",
-      "destination": "server.js"
-    },
-    {
-      "source": "/savefile",
-      "destination": "server.js"
-    },
-    {
-      "source": "/register",
-      "destination": "server.js"
-    },
-    {
-      "source": "/login",
-      "destination": "server.js"
-    },
-    {
-      "source": "/logout",
-      "destination": "server.js"
-    },
-    {
-      "source": "/:path*",
-      "destination": "server.js"
+      "source": "/:path((?!_next|vps_panel|static|favicon.ico).*)",
+      "destination": "/server.js"
     }
   ]
 }
